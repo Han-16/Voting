@@ -59,8 +59,12 @@ contract Voting {
         _;
     }
     
-    function open() public onlyOwner {
+    modifier isItClosed() {
         require(registrationStartTime == 0 && votingStartTime == 0, "Voting is already open.");
+        _;
+    }
+    
+    function open() public onlyOwner isItClosed {
         registrationStartTime = block.timestamp;
         votingStartTime = registrationStartTime + 1 minutes;
         emit RegistrationStarted(registrationStartTime, registrationStartTime + 1 minutes);
