@@ -11,7 +11,7 @@ contract Voting {
     string public WinnerName;
     uint public winnerVotes;
     address public WinnerAddress;
-
+    bool private whetherWithdraw;
 
     struct Candidate {
         string name;
@@ -60,7 +60,7 @@ contract Voting {
     }
     
     modifier isItClosed() {
-        require(registrationStartTime == 0 && votingStartTime == 0, "Voting is already open.");
+        require(registrationStartTime == 0 && votingStartTime == 0, "Voting has not yet been closed.");
         _;
     }
     
@@ -126,9 +126,11 @@ contract Voting {
     function withdraw() public onlyOwner {
         require(block.timestamp > votingStartTime, "Voting is still open");
         owner.transfer(address(this).balance);
+        whetherWithdraw = true;
     }
 
     function close() public onlyOwner{
+        require(whetherWithdraw, "You did not withdraw.");
         registrationStartTime = 0;
         votingStartTime = 0;    
         for (uint i = 0; i < candidateAddresses.length; i++) {
