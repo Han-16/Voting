@@ -30,6 +30,7 @@ contract Voting {
     event CandidateRegistered(string name);
     event VoteSubmitted(address voter, string candidateName, uint votes);
     event Winner(address winnerAddress, string winnerName, uint winnerVotes);
+    event VotingClosed();
 
 
     constructor() {
@@ -142,5 +143,6 @@ contract Voting {
         WinnerName = "";
         cadidatesNames = new string[](0);
         
+        emit votingClosed();
     }
 }
