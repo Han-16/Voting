@@ -48,7 +48,7 @@ contract Voting {
         require(
             block.timestamp >= registrationStartTime &&
             block.timestamp < registrationStartTime + 1 minutes,
-            "Registration is not currently open"
+            "Registration isn't currently open"
         );
         _;
     }
@@ -57,7 +57,7 @@ contract Voting {
         require(
             block.timestamp >= votingStartTime &&
             block.timestamp < votingStartTime + 1 minutes,
-            "Voting is not currently open"
+            "Voting isn't currently open"
         );
         _;
     }
@@ -85,7 +85,7 @@ contract Voting {
     }
 
     function registerCandidate(string memory _name) public payable duringRegistration {
-        require(!candidates[msg.sender].isRegistered, "You have already registered as a candidate");
+        require(!candidates[msg.sender].isRegistered, "You've already registered as a candidate");
         require(!contains(cadidatesNames, _name), "The name already exists");  
         candidates[msg.sender] = Candidate(_name, 0, true);
         candidateAddresses.push(msg.sender);
@@ -133,7 +133,7 @@ contract Voting {
     }
 
     function close() public onlyOwner {
-        require(whetherWithdraw, "You did not withdraw.");
+        require(whetherWithdraw, "You didn't withdraw.");
         for (uint i = 0; i < candidateAddresses.length; i++) {
             delete candidates[candidateAddresses[i]];
         }
