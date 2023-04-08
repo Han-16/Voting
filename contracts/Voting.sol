@@ -13,6 +13,8 @@ contract Voting {
     address public WinnerAddress;
     bool private whetherWithdraw;
 
+
+
     struct Candidate {
         string name;
         uint votes;
@@ -130,19 +132,21 @@ contract Voting {
         whetherWithdraw = true;
     }
 
-    function close() public onlyOwner{
+    function close() public onlyOwner {
         require(whetherWithdraw, "You did not withdraw.");
-        registrationStartTime = 0;
-        votingStartTime = 0;    
         for (uint i = 0; i < candidateAddresses.length; i++) {
             delete candidates[candidateAddresses[i]];
         }
+        registrationStartTime = 0;
+        votingStartTime = 0;    
         candidateAddresses = new address[](0);
         totalVotes = 0;
         winnerIndex = 0;
         WinnerName = "";
         cadidatesNames = new string[](0);
-        
+        whetherWithdraw = false;
+        winnerVotes = 0;
+        WinnerAddress = '';
         emit votingClosed();
     }
 }
