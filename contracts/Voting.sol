@@ -29,7 +29,7 @@ contract Voting {
     event VotingStarted(uint startTime, uint endTime);
     event CandidateRegistered(string name);
     event VoteSubmitted(address voter, string candidateName, uint votes);
-    event Winner(address winnerAddress, string winnerName, uint winnerVotes);
+    event whoIsTheWinner(address winnerAddress, string winnerName, uint winnerVotes);
     event VotingClosed();
 
 
@@ -119,7 +119,7 @@ contract Voting {
         string memory winnerName = candidates[WinnerAddress].name;
         winnerVotes = candidates[WinnerAddress].votes;
         WinnerName = candidates[WinnerAddress].name;
-        emit Winner(WinnerAddress, winnerName, winnerVotes);
+        emit whoIsTheWinner(WinnerAddress, winnerName, winnerVotes);
     }
 
     function getWinnerInfo() public view returns (Candidate memory) {
@@ -149,6 +149,3 @@ contract Voting {
         emit VotingClosed();
     }
 }
-// voting.vote(0x5165048824e71d0aEc84Ce0A7794b8939221D3eF, { from: <voter-address>, value: <vote-amount> })
-// voting.open({ from: <owner-address> })
-
