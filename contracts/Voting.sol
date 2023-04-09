@@ -139,14 +139,13 @@ contract Voting {
         }
         registrationStartTime = 0;
         votingStartTime = 0;    
-        candidateAddresses = new address[](0);
         totalVotes = 0;
         winnerIndex = 0;
         WinnerName = "";
         cadidatesNames = new string[](0);
         whetherWithdraw = false;
         winnerVotes = 0;
-        WinnerAddress = '';
-        emit votingClosed();
+        WinnerAddress = 0x0000000000000000000000000000000000000000;
+        emit VotingClosed();
     }
 }
