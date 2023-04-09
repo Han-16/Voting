@@ -14,7 +14,6 @@ contract Voting {
     bool private whetherWithdraw;
 
 
-
     struct Candidate {
         string name;
         uint votes;
@@ -24,8 +23,7 @@ contract Voting {
 
     mapping (address => Candidate) public candidates;
     address[] public candidateAddresses;
-    string[] public cadidatesNames;
-
+    string[] public candidatesNames;
 
     event RegistrationStarted(uint startTime, uint endTime);
     event VotingStarted(uint startTime, uint endTime);
@@ -86,15 +84,15 @@ contract Voting {
 
     function registerCandidate(string memory _name) public payable duringRegistration {
         require(!candidates[msg.sender].isRegistered, "You've already registered as a candidate");
-        require(!contains(cadidatesNames, _name), "The name already exists");  
+        require(!contains(candidatesNames, _name), "The name already exists");  
         candidates[msg.sender] = Candidate(_name, 0, true);
         candidateAddresses.push(msg.sender);
-        cadidatesNames.push(_name);
+        candidatesNames.push(_name);
         emit CandidateRegistered(_name);
     }
 
     function getCandidates() public view returns(string[] memory) {
-        return cadidatesNames;
+        return candidatesNames;
     }
 
     function vote(address candidate) public payable duringVoting {
@@ -109,12 +107,14 @@ contract Voting {
     function determineWinner() public onlyOwner {
         require(block.timestamp > votingStartTime + 1 minutes, "Voting is still open"); // 투표시간 지나야함.
         uint winningVoteCount = 0;
+
         for(uint i=0; i<candidateAddresses.length; i++) {
             if(candidates[candidateAddresses[i]].votes > winningVoteCount) {
                 winningVoteCount = candidates[candidateAddresses[i]].votes;
                 winnerIndex = i;
             }
         }
+        
         WinnerAddress = candidateAddresses[winnerIndex];
         string memory winnerName = candidates[WinnerAddress].name;
         winnerVotes = candidates[WinnerAddress].votes;
@@ -142,10 +142,13 @@ contract Voting {
         totalVotes = 0;
         winnerIndex = 0;
         WinnerName = "";
-        cadidatesNames = new string[](0);
+        candidatesNames = new string[](0);
         whetherWithdraw = false;
         winnerVotes = 0;
         WinnerAddress = 0x0000000000000000000000000000000000000000;
         emit VotingClosed();
     }
 }
+// voting.vote(0x5165048824e71d0aEc84Ce0A7794b8939221D3eF, { from: <voter-address>, value: <vote-amount> })
+// voting.open({ from: <owner-address> })
+
