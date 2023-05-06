@@ -2,7 +2,6 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 contract Voting {
-
     address payable public owner;
     uint public totalVotes;
     uint public registrationStartTime;
@@ -12,7 +11,7 @@ contract Voting {
     uint public winnerVotes;
     address public WinnerAddress;
     bool private whetherWithdraw;
-
+    uint public Nth;
 
     struct Candidate {
         string name;
@@ -20,18 +19,18 @@ contract Voting {
         bool isRegistered;
     }
 
-
     mapping (address => Candidate) public candidates;
+    mapping (uint => Candidate) public NthWinner;
+    
     address[] public candidateAddresses;
     string[] public candidatesNames;
 
-    event RegistrationStarted(uint startTime, uint endTime);
-    event VotingStarted(uint startTime, uint endTime);
+    event RegistrationStarted(uint startTime, uint endTime, uint Nth);
+    event VotingStarted(uint startTime, uint endTime, uint Nth);
     event CandidateRegistered(string name);
     event VoteSubmitted(address voter, string candidateName, uint votes);
-    event whoIsTheWinner(address winnerAddress, string winnerName, uint winnerVotes);
-    event VotingClosed();
-
+    event whoIsTheWinner(address WinnerAddress, string WinnerName, uint winnerVotes, uint Nth);
+    event VotingClosed(uint Nth);
 
     constructor() {
         owner = payable(msg.sender);
@@ -68,8 +67,9 @@ contract Voting {
     function open() public onlyOwner isItClosed {
         registrationStartTime = block.timestamp;
         votingStartTime = registrationStartTime + 1 minutes;
-        emit RegistrationStarted(registrationStartTime, registrationStartTime + 1 minutes);
-        emit VotingStarted(votingStartTime, votingStartTime + 1 minutes);
+        Nth++;
+        emit RegistrationStarted(registrationStartTime, registrationStartTime + 1 minutes, Nth);
+        emit VotingStarted(votingStartTime, votingStartTime + 1 minutes, Nth);
     }
 
 
@@ -81,7 +81,7 @@ contract Voting {
         }
         return false;
     }
-
+    
     function registerCandidate(string memory _name) public payable duringRegistration {
         require(!candidates[msg.sender].isRegistered, "You've already registered as a candidate");
         require(!contains(candidatesNames, _name), "The name already exists");  
@@ -116,10 +116,10 @@ contract Voting {
         }
         
         WinnerAddress = candidateAddresses[winnerIndex];
-        string memory winnerName = candidates[WinnerAddress].name;
-        winnerVotes = candidates[WinnerAddress].votes;
-        WinnerName = candidates[WinnerAddress].name;
-        emit whoIsTheWinner(WinnerAddress, winnerName, winnerVotes);
+        NthWinner[Nth] = candidates[WinnerAddress];
+        WinnerName = NthWinner[Nth].name;
+        winnerVotes = NthWinner[Nth].votes;
+        emit whoIsTheWinner(WinnerAddress, WinnerName, winnerVotes, Nth);
     }
 
     function getWinnerInfo() public view returns (Candidate memory) {
@@ -146,6 +146,6 @@ contract Voting {
         whetherWithdraw = false;
         winnerVotes = 0;
         WinnerAddress = 0x0000000000000000000000000000000000000000;
-        emit VotingClosed();
+        emit VotingClosed(Nth);
     }
 }

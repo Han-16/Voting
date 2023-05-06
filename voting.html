@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voting DApp</title>
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <script>
+    // Connect to the Ethereum network using Ethers.js
+
+    var Web3 = require('web3');
+    //var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    var provider = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+    // const provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
+    const signer = provider.getSigner();
+
+    // Contract ABI and address
+    const contractAddress = '0xf472a171dc35fD30a2462dD5CDCF5F39b26dc390';
+    const contractABI = [ { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "string", "name": "name", "type": "string" } ], "name": "CandidateRegistered", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "startTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "endTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" } ], "name": "RegistrationStarted", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "voter", "type": "address" }, { "indexed": false, "internalType": "string", "name": "candidateName", "type": "string" }, { "indexed": false, "internalType": "uint256", "name": "votes", "type": "uint256" } ], "name": "VoteSubmitted", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" } ], "name": "VotingClosed", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "startTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "endTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" } ], "name": "VotingStarted", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "WinnerAddress", "type": "address" }, { "indexed": false, "internalType": "string", "name": "WinnerName", "type": "string" }, { "indexed": false, "internalType": "uint256", "name": "winnerVotes", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" } ], "name": "whoIsTheWinner", "type": "event" }, { "inputs": [], "name": "Nth", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "NthWinner", "outputs": [ { "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WinnerAddress", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WinnerName", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "candidateAddresses", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "", "type": "address" } ], "name": "candidates", "outputs": [ { "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "candidatesNames", "outputs": [ { "internalType": "string", "name": "", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "close", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "determineWinner", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "getCandidates", "outputs": [ { "internalType": "string[]", "name": "", "type": "string[]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getWinnerInfo", "outputs": [ { "components": [ { "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" } ], "internalType": "struct Voting.Candidate", "name": "", "type": "tuple" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "open", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address payable", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "_name", "type": "string" } ], "name": "registerCandidate", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "registrationStartTime", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalVotes", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "candidate", "type": "address" } ], "name": "vote", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "votingStartTime", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "winnerIndex", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "winnerVotes", "outputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdraw", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]
+
+    // Instantiate the contract
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+    // Event handlers
+    async function startRegistration() {
+      await contract.open();
+    }
+
+    async function registerCandidate() {
+      const name = document.getElementById('candidateName').value;
+      await contract.registerCandidate(name);
+    }
+
+    async function startVoting() {
+      await contract.determineWinner();
+    }
+
+    async function vote() {
+      const candidateAddress = 'CANDIDATE_ADDRESS';
+      const value = ethers.utils.parseEther('1'); // 1 ETH
+      await contract.vote(candidateAddress, { value: value });
+    }
+
+    async function withdraw() {
+      await contract.withdraw();
+    }
+
+    async function closeVoting() {
+      await contract.close();
+    }
+
+    // Button event handlers
+    document.getElementById('startRegistrationBtn').addEventListener('click', startRegistration);
+    document.getElementById('registerCandidateBtn').addEventListener('click', registerCandidate);
+    document.getElementById('startVotingBtn').addEventListener('click', startVoting);
+    document.getElementById('voteBtn').addEventListener('click', vote);
+    document.getElementById('withdrawBtn').addEventListener('click', withdraw);
+    document.getElementById('closeVotingBtn').addEventListener('click', closeVoting);
+  </script>
+</head>
+<body>
+  <h1>Voting DApp</h1>
+
+  <h2>Registration</h2>
+  <button id="startRegistrationBtn">Start Registration</button>
+
+  <h2>Candidate Registration</h2>
+  <input type="text" id="candidateName" placeholder="Candidate Name" />
+  <button id="registerCandidateBtn">Register Candidate</button>
+
+  <h2>Voting</h2>
+  
+  <button id="voteBtn">Vote</button>
+
+  <h2>Withdraw</h2>
+  <button id="withdrawBtn">Withdraw</button>
+  
+
+  <h2>Owner</h2>
+  <h3>Open</h3>
+  <button id="startRegistrationBtn">Start Registration</button>
+  <h3></h3>
+  <button id="startVotingBtn">Start Voting</button>
+  <button id="closeVotingBtn">Close Voting</button>
+
+
+</body>
+</html>
