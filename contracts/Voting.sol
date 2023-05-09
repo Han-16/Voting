@@ -94,7 +94,6 @@ contract Voting {
     function getCandidates() public view returns(string[] memory) {
         return candidatesNames;
     }
-
     function vote(address candidate) public payable duringVoting {
         require(candidates[candidate].isRegistered, "Invalid candidate address");
         require(msg.value > 0, "Voting requires a non-zero amount of eth.");
