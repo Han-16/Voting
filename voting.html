@@ -2,65 +2,90 @@
 <html>
 
 <head>
-    <title>Voting Dapp</title>
-    <meta charset="UTF-8">
+    <div class="container">
+        <h1>Project Name : Voting Dapp</h1>
+        <meta charset="UTF-8">
+        <h2>Team Name : 한병규(20192806), 윤미나(20215209)</h2>
+        <!-- 실행영상 주소 -->
+        <hr class="my-2">
+        <h4><a href="https://www.naver.com" style="color : blue; text-decoration:none">Project 실행영상</a></h4>
+    </div>
     <script src="node_modules/web3/dist/web3.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-    <h1>Voting Dapp</h1>
-    <h2 id="currentCandidates">Current Candidates</h2>
-    <div id="candidatesList"></div>
-    <br>
+    <div class="container">
+        <hr class="my-2">
+        <h2 id="currentCandidates">Current Candidates</h2>
 
-    <h2 id='candidatetime' style="display: none;">후보자 등록 남은 시간</h2>
-    <p id="registration-time" style="display: none;"></p>
+        <ol class="list-group">
+            <div>
+                <p id="candidatesList"></p>
+            </div>
+        </ol>
+        <div>
+            <h2 id='candidatetime' style="display: none;">후보자 등록 남은 시간 : </h2>
+            <p id="registration-time" style="display: none;"></p>
 
-    <h2 id='votingtime' style="display: none;">투표 남은 시간</h2>
-    <p id='voting-time' style="display: none;"></p>
-
-    <h2>Winner</h2>
-    <div id="winner"></div>
-    <div id="ownerActions">
-        <h2>Owner Actions</h2>
-        <button id="openBtn">Open Voting</button>
-        <button id="closeBtn">Close Voting</button>
-        <button id="withdrawBtn">Withdraw Funds</button>
-        <button id="determineBtn">Determine Winner</button>
-    </div>
-
-    <div id="userActions">
+            <h2 id='votingtime' style="display: none;">투표 남은 시간</h2>
+            <p id='voting-time' style="display: none;"></p>
+        </div>
+        <hr class="my-2">
+        <h2>Winner</h2>
+        <div id="winner"></div>
+        <hr class="my-2">
+        <div id="ownerActions">
+            <h2>Owner Actions</h2>
+            <br>
+            <button id="openBtn" class="btn btn-primary">Open Voting</button>
+            <button id="closeBtn" class="btn btn-primary">Close Voting</button>
+            <button id="withdrawBtn" class="btn btn-primary">Withdraw Funds</button>
+            <button id="determineBtn" class="btn btn-primary">Determine Winner</button>
+        </div>
+        <hr class="my-2">
         <h2>User Actions</h2>
-        <label for="nameInput">Candidate Name:</label>
-        <input type="text" id="nameInput">
-        <button id="registerBtn">Register as Candidate</button>
         <br>
-        <label for="addressInput">Candidate Address:</label>
-        <input type="text" id="addressInput">
-        <br>
-        <label for="balanceInput">Vote Amount:</label>
-        <input type="text" id="balanceInput">
-        <button id="voteBtn">Vote</button>
-    </div>
+        <div class="form-group">
+            <label for="nameInput">Candidate Name</label>
+            <input type="text" class="form-control" id="nameInput" placeholder="이름을 입력하세요" aria-describedby="emailHelp">
+            <br>
+            <button id="registerBtn" class="btn btn-primary">Register as Candidate</button>
+        </div>
 
-    <div id="votingInfo">
-        <h2>Voting Information</h2>
-        <p>Total Votes: <span id="totalVotes"></span></p>
-        <p>Current Nth: <span id="nth"></span></p>
+        <hr class="my-2">
+        <div class="form-group">
+            <label for="addressInput">Candidate Address</label>
+            <input type="text" class="form-control" id="addressInput" placeholder="투표하려는 후보자의 주소를 입력하세요">
+            <br>
+            <label for="addressInput">Vote Amount</label>
+            <input type="text" class="form-control" id="balanceInput" placeholder="투표하려는 ETH를 입력하세요">
+        </div>
+        <button id="voteBtn" class="btn btn-primary">Vote</button>
+        <hr class="my-2">
+
+        <div id="votingInfo">
+            <h2>Voting Information</h2>
+            <p>Total Votes: <span id="totalVotes"></span></p>
+            <p>Current Nth: <span id="nth"></span></p>
+        </div>
     </div>
     <script>
-        // 배포자 주소로 바꿔두어야함
-        const owner = '0xBf246aB6AD6b2Bc2dC3379B3028514A62915FC92';
+        // 배포자 주소
+        const owner = '0x1476f6590c2541f8a1f074ab91436b51b9fb06a1';
 
         if (typeof web3 !== "undefined") {
             web3 = new Web3(web3.currentProvider);
         } else {
-            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545")); // Replace with your Ethereum node URL
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
         }
 
 
-        // 배포할 때 주소로 바꿔야함
-        const contractAddress = '0xDDc18eDa98fBEC2141b4ee3D5835B9f79b7fEC77';
+        // 배포한 후 스마트 컨트랙트 주소 기입
+        const contractAddress = '0xb3Bc3b20888B1D0C8a8F8FC695748F33691f1506';
         const contractABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "string", "name": "name", "type": "string" }], "name": "CandidateRegistered", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "startTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "endTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" }], "name": "RegistrationStarted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "voter", "type": "address" }, { "indexed": false, "internalType": "string", "name": "candidateName", "type": "string" }, { "indexed": false, "internalType": "uint256", "name": "votes", "type": "uint256" }], "name": "VoteSubmitted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" }], "name": "VotingClosed", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "startTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "endTime", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" }], "name": "VotingStarted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "WinnerAddress", "type": "address" }, { "indexed": false, "internalType": "string", "name": "WinnerName", "type": "string" }, { "indexed": false, "internalType": "uint256", "name": "winnerVotes", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "Nth", "type": "uint256" }], "name": "whoIsTheWinner", "type": "event" }, { "inputs": [], "name": "Nth", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "NthWinner", "outputs": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WinnerAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WinnerName", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "candidateAddresses", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "candidates", "outputs": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "candidatesNames", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "close", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "determineWinner", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "getCandidates", "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getWinnerInfo", "outputs": [{ "components": [{ "internalType": "string", "name": "name", "type": "string" }, { "internalType": "uint256", "name": "votes", "type": "uint256" }, { "internalType": "bool", "name": "isRegistered", "type": "bool" }], "internalType": "struct Voting.Candidate", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "open", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address payable", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "_name", "type": "string" }], "name": "registerCandidate", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "registrationStartTime", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "candidate", "type": "address" }], "name": "vote", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "votingStartTime", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "winnerIndex", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "winnerVotes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "withdraw", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
 
 
@@ -117,6 +142,7 @@
                 const WinnerName = await contract.methods.WinnerName().call();
                 const winner = document.getElementById('winner');
                 winner.innerHTML = WinnerName;
+                console.log("determineWinner : ", result);
             } catch (error) {
                 console.error('Error determining winner:', error);
             }
@@ -128,7 +154,6 @@
                 const accounts = await web3.eth.getAccounts();
                 const result = await contract.methods.registerCandidate(name).send({ from: accounts[0] });
                 console.log('Candidate registered:', result);
-                console.log("register event : ", result.events)
 
             } catch (error) {
                 console.error('Error registering candidate:', error);
@@ -152,7 +177,7 @@
                 var totalVotes = await contract.methods.totalVotes().call();
                 totalVotes_ETH = await web3.utils.fromWei(web3.utils.toBN(totalVotes), 'ether');
                 const nth = await contract.methods.Nth().call();
-                document.getElementById('totalVotes').textContent = totalVotes_ETH+ " ETH";
+                document.getElementById('totalVotes').textContent = totalVotes_ETH + " ETH";
                 document.getElementById('nth').textContent = nth;
             } catch (error) {
                 console.error('Error getting voting info:', error);
